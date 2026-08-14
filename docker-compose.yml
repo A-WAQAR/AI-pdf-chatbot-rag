@@ -1,0 +1,30 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi_backend
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    environment:
+      - HF_HUB_ENABLE_HF_TRANSFER=0
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: streamlit_frontend
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    command: streamlit run app.py --server.port=8501 --server.address=0.0.0.0
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api
+
+
